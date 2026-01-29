@@ -1,11 +1,11 @@
-import { TestUseCase } from '@/domain/cine/application/use-cases/test'
+import { CreateAccountUseCase } from '@/domain/cine/application/use-cases/create-user'
 import { Module } from '@nestjs/common'
 import { DatabaseModule } from '../database/database.module'
-import { TestController } from './controllers/test.controller'
+import { CreateAccount } from './controllers/create-user.controller'
 
 @Module({
   imports: [DatabaseModule],
-  controllers: [TestController],
-  providers: [TestUseCase],
+  controllers: [CreateAccount],
+  providers: [CreateAccountUseCase],
 })
 export class HttpModule {}
