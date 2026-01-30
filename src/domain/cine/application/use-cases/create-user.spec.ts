@@ -4,13 +4,13 @@ import { CreateAccountUseCase } from './create-user'
 let inMemoryUsersRepository: InMemoryUsersRepository
 let sut: CreateAccountUseCase
 
-describe('Create Courier', () => {
+describe('Create User', () => {
   beforeEach(() => {
     inMemoryUsersRepository = new InMemoryUsersRepository()
     sut = new CreateAccountUseCase(inMemoryUsersRepository)
   })
 
-  it('should be able create a new courier', async () => {
+  it('should be able create a new user', async () => {
     const result = await sut.execute({
       name: 'example',
       email: 'example@example.com',
