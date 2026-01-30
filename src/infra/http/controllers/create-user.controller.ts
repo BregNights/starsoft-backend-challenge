@@ -18,7 +18,7 @@ const createAccountBodySchema = z.object({
 type CreateAccountBodySchema = z.infer<typeof createAccountBodySchema>
 
 @Controller('/accounts')
-export class CreateAccount {
+export class CreateAccountController {
   constructor(private usecase: CreateAccountUseCase) {}
   @Post()
   @HttpCode(201)
@@ -35,7 +35,5 @@ export class CreateAccount {
       const error = result.value
       throw new ConflictException(error.message)
     }
-
-    return result
   }
 }
