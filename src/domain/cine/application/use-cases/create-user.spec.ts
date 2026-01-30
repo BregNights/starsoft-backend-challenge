@@ -10,7 +10,7 @@ describe('Create Courier', () => {
     sut = new CreateAccountUseCase(inMemoryUsersRepository)
   })
 
-  it('should be able register a new courier', async () => {
+  it('should be able create a new courier', async () => {
     const result = await sut.execute({
       name: 'example',
       email: 'example@example.com',

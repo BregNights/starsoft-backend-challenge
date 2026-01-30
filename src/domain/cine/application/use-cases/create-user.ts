@@ -1,6 +1,6 @@
 import { Either, left, right } from '@/core/either'
 import { Injectable } from '@nestjs/common'
-import { User, UsersRepository } from '../repositories/users-repository'
+import { UsersRepository } from '../repositories/users-repository'
 import { UserAlreadyExistsError } from './errors/user-already-exists-error'
 
 interface CreateAccountUseCaseRequest {
@@ -8,12 +8,7 @@ interface CreateAccountUseCaseRequest {
   email: string
 }
 
-type CreateAccountUseCaseResponse = Either<
-  UserAlreadyExistsError,
-  {
-    user: User
-  }
->
+type CreateAccountUseCaseResponse = Either<UserAlreadyExistsError, null>
 
 @Injectable()
 export class CreateAccountUseCase {
@@ -25,8 +20,8 @@ export class CreateAccountUseCase {
     const userWithSameEmail = await this.usersRepository.findByEmail(email)
     if (userWithSameEmail) return left(new UserAlreadyExistsError(email))
 
-    const user = await this.usersRepository.create({ name, email })
+    await this.usersRepository.create({ name, email })
 
-    return right({ user })
+    return right(null)
   }
 }
