@@ -16,14 +16,20 @@
 
 ## FASE 2 — Sessões de Cinema
 
-#### [ ] Schema Prisma: Session
-#### [ ] Schema Prisma: Seat
-#### [ ] Criar sessão com: filme, horário, sala, preço, geração automática de assentos (mín. 16)
-#### [ ] Rota POST /sessions
+#### [x] Schema Prisma: Session
+#### [x] Schema Prisma: Seat
+#### [x] Criar sessão com: filme, horário, sala, preço
+#### [x] Rota POST /sessions
 
 ## FASE 3 — Consulta de Disponibilidade
 
-#### [ ] Rota GET /sessions/:id/seats
-#### [ ] Retornar: seatNumber, status (AVAILABLE / RESERVED / SOLD)
+#### [x] Rota POST /seats
+#### [ ] Rota GET /sessions/:id/seats (Retornar: seatNumber, status (AVAILABLE / RESERVED / SOLD))
 
 # Dia 2
+
+## FASE 4 — Reservas (parte mais crítica) 🔥
+
+#### [ ] Schema Prisma: Reservation
+#### [ ] Schema Prisma: ReservationSeat
+#### [ ] Rota POST /reservations
