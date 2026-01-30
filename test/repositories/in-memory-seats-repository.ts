@@ -15,4 +15,10 @@ export class InMemorySeatsRepository implements SeatsRepository {
 
     return session || null
   }
+
+  async findManySeatsBySessionId(sessionId: string): Promise<Seat[]> {
+    const seats = this.items.filter((item) => item.id === sessionId)
+
+    return seats
+  }
 }
