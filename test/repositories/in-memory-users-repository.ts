@@ -6,10 +6,8 @@ import {
 export class InMemoryUsersRepository implements UsersRepository {
   public items: User[] = []
 
-  async create(user: User): Promise<User> {
+  async create(user: User): Promise<void> {
     this.items.push(user)
-
-    return user
   }
 
   async findByEmail(email: string): Promise<User | null> {
