@@ -24,11 +24,11 @@
 ## FASE 3 — Consulta de Disponibilidade
 
 #### [x] Rota POST /seats
-#### [ ] Rota GET /sessions/:id/seats (Retornar: seatNumber, status (AVAILABLE / RESERVED / SOLD))
+#### [x] Rota GET /sessions/:id/seats (Retornar: seatNumber, status (AVAILABLE / RESERVED / SOLD))
 
 # Dia 2
 
-## FASE 4 — Reservas (parte mais crítica) 🔥
+## FASE 4 — Reservas
 
 #### [ ] Schema Prisma: Reservation
 #### [ ] Schema Prisma: ReservationSeat
