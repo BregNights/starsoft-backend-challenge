@@ -6,7 +6,7 @@ let inMemorySeatsRepository: InMemorySeatsRepository
 let inMemorySessionsRepository = new InMemorySessionsRepository()
 let sut: RegisterSeatUseCase
 
-describe('Create Session', () => {
+describe('Register Session', () => {
   beforeEach(async () => {
     inMemorySeatsRepository = new InMemorySeatsRepository()
     inMemorySessionsRepository = new InMemorySessionsRepository()
@@ -30,6 +30,12 @@ describe('Create Session', () => {
       sessionId: '1',
     })
 
+    await sut.execute({
+      seatNumber: 'A2',
+      sessionId: '1',
+    })
+
     expect(result.isRight()).toBe(true)
+    expect(inMemorySeatsRepository.items).toHaveLength(2)
   })
 })
