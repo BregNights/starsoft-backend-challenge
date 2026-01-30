@@ -25,14 +25,8 @@ export class RegisterSeatUseCase {
     seatNumber,
     sessionId,
   }: RegisterSeatUseCaseRequest): Promise<RegisterSeatUseCaseResponse> {
-    console.log(sessionId)
     const session = await this.sessionsRepository.findById(sessionId)
     if (!session) return left(new ResourceNotFoundError())
-
-    const seatSession = await this.seatsRepository.findManySeatsBySessionId(session.id!)
-    console.log(seatSession)
-    // if (seatSession?.seatNumber)
-    //   return left(new SessionAlreadyExistsSeatsError())
 
     await this.seatsRepository.create({
       seatNumber,
