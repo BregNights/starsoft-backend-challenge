@@ -3,17 +3,13 @@ import { Injectable } from '@nestjs/common'
 import { SeatsRepository } from '../repositories/seat-respository'
 import { SessionsRepository } from '../repositories/session-repository'
 import { ResourceNotFoundError } from './errors/resource-not-found-error'
-import { SessionAlreadyExistsSeatsError } from './errors/session-already-exists-seats-error'
 
 interface RegisterSeatUseCaseRequest {
   seatNumber: string
   sessionId: string
 }
 
-type RegisterSeatUseCaseResponse = Either<
-  ResourceNotFoundError | SessionAlreadyExistsSeatsError,
-  null
->
+type RegisterSeatUseCaseResponse = Either<ResourceNotFoundError, null>
 
 @Injectable()
 export class RegisterSeatUseCase {
