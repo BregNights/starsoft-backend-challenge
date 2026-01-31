@@ -2,7 +2,7 @@ import { Either, left, right } from '@/core/either'
 import { Injectable } from '@nestjs/common'
 import { Seat, SeatsRepository } from '../repositories/seat-respository'
 import { SessionsRepository } from '../repositories/session-repository'
-import { ResourceNotFoundError } from './errors/resource-not-found-error'
+import { ResourceNotFoundError } from './errors/resource-not-found.error'
 
 interface FetchSeatBySessionUseCaseRequest {
   sessionId: string
