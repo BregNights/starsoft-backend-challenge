@@ -30,6 +30,6 @@
 
 ## FASE 4 — Reservas
 
-#### [ ] Schema Prisma: Reservation
+#### [x] Schema Prisma: Reservation
 #### [ ] Schema Prisma: ReservationSeat
-#### [ ] Rota POST /reservations
+#### [x] Rota POST /reservations
