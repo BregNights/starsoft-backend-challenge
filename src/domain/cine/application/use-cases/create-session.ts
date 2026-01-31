@@ -1,8 +1,8 @@
 import { Either, left, right } from '@/core/either'
 import { Injectable } from '@nestjs/common'
 import { SessionsRepository } from '../repositories/session-repository'
-import { InvalidSessionPrice } from './errors/invalid-session-price.error'
-import { SessionInPastError } from './errors/session-in-past-error'
+import { InvalidSessionPriceError } from './errors/invalid-session-price.error'
+import { SessionInPastError } from './errors/session-in-past.error'
 
 interface CreateSessionUseCaseRequest {
   movieTitle: string
@@ -12,7 +12,7 @@ interface CreateSessionUseCaseRequest {
 }
 
 type CreateSessionUseCaseResponse = Either<
-  SessionInPastError | InvalidSessionPrice,
+  SessionInPastError | InvalidSessionPriceError,
   null
 >
 
@@ -30,7 +30,7 @@ export class CreateSessionUseCase {
     }
 
     if (price <= 0) {
-      return left(new InvalidSessionPrice())
+      return left(new InvalidSessionPriceError())
     }
 
     await this.sessionsRepository.create({
