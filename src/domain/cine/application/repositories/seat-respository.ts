@@ -10,6 +10,7 @@ export interface Seat {
 
 export abstract class SeatsRepository {
   abstract create(seat: Seat): Promise<void>
+  abstract findById(id: string): Promise<Seat | null>
   abstract findBySessionId(sessionId: string): Promise<Seat | null>
   abstract findManySeatsBySessionId(sessionId: string): Promise<Seat[]>
 }
