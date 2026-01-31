@@ -6,8 +6,14 @@ import {
 export class InMemorySeatsRepository implements SeatsRepository {
   public items: Seat[] = []
 
-  async create(Seat: Seat): Promise<void> {
-    this.items.push(Seat)
+  async create(seat: Seat): Promise<void> {
+    this.items.push(seat)
+  }
+
+  async findById(id: string): Promise<Seat | null> {
+    const session = this.items.find((item) => item.id === id)
+
+    return session || null
   }
 
   async findBySessionId(sessionId: string): Promise<Seat | null> {
@@ -17,7 +23,7 @@ export class InMemorySeatsRepository implements SeatsRepository {
   }
 
   async findManySeatsBySessionId(sessionId: string): Promise<Seat[]> {
-    const seats = this.items.filter((item) => item.id === sessionId)
+    const seats = this.items.filter((item) => item.sessionId === sessionId)
 
     return seats
   }
