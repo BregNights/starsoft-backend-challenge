@@ -15,9 +15,17 @@ export class PrismaSeatsRepository implements SeatsRepository {
       data: {
         seatNumber: seat.seatNumber,
         sessionId: seat.sessionId,
-        status: SeatStatus.AVAILABLE,
+        status: SeatStatus.AVAILABLE ?? seat.status,
       },
     })
+  }
+
+  async findById(id: string): Promise<Seat | null> {
+    const session = await this.prisma.seat.findUnique({
+      where: { id },
+    })
+
+    return session ?? null
   }
 
   async findBySessionId(sessionId: string): Promise<Seat | null> {
