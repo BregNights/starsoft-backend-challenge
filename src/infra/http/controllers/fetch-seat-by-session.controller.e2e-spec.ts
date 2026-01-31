@@ -29,15 +29,12 @@ describe('Fetch Seat By Session (E2E)', () => {
   it('[GET] /sessions/:id/seats', async () => {
     const session = await sessionFactory.makePrismaSession()
 
-    await seatFactory.makePrismaSeat({
-      sessionId: session.id,
-      seatNumber: 'A1',
-    })
-
-    await seatFactory.makePrismaSeat({
-      sessionId: session.id,
-      seatNumber: 'A2',
-    })
+    for (let i = 1; i <= 2; i++) {
+      await seatFactory.makePrismaSeat({
+        sessionId: session.id,
+        seatNumber: `A${i}`,
+      })
+    }
 
     const response = await request(app.getHttpServer())
       .get(`/sessions/${session.id}/seats`)
