@@ -16,10 +16,11 @@ datasource db {
 }
 
 model User {
-  id        String   @default(uuid())
-  name      String
-  email     String   @unique
-  createdAt DateTime @default(now())
+  id           String        @id @default(uuid())
+  name         String
+  email        String        @unique
+  createdAt    DateTime      @default(now())
+  reservations Reservation[]
 
   @@map("user")
 }
@@ -37,15 +38,36 @@ model Session {
 }
 
 model Seat {
-  id         String     @id @default(uuid())
-  seatNumber String
-  status     SeatStatus @default(AVAILABLE)
-  sessionId  String
-  session    Session    @relation(fields: [sessionId], references: [id])
-  createdAt  DateTime   @default(now())
+  id          String       @id @default(uuid())
+  seatNumber  String
+  status      SeatStatus   @default(AVAILABLE)
+  sessionId   String
+  session     Session      @relation(fields: [sessionId], references: [id])
+  createdAt   DateTime     @default(now())
+  reservation Reservation?
 
   @@unique([sessionId, seatNumber])
   @@map("seat")
+}
+
+model Reservation {
+  id        String            @id @default(uuid())
+  seatId    String            @unique
+  userId    String
+  status    ReservationStatus
+  expiresAt DateTime
+  createdAt DateTime          @default(now())
+
+  seat Seat @relation(fields: [seatId], references: [id])
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("reservation")
+}
+
+enum ReservationStatus {
+  ACTIVE
+  EXPIRED
+  CONFIRMED
 }
 
 enum SeatStatus {
