@@ -1,6 +1,9 @@
 import { Either, left, right } from '@/core/either'
 import { Injectable } from '@nestjs/common'
-import { ReservationsRepository } from '../repositories/reservation-repository'
+import {
+  Reservation,
+  ReservationsRepository,
+} from '../repositories/reservation-repository'
 import { SeatsRepository } from '../repositories/seat-respository'
 import { SessionsRepository } from '../repositories/session-repository'
 import { ResourceNotFoundError } from './errors/resource-not-found.error'
@@ -14,7 +17,9 @@ interface CreateReservationUseCaseRequest {
 
 type CreateReservationUseCaseResponse = Either<
   SeatAlreadyReservedError | ResourceNotFoundError,
-  null
+  {
+    reservation: Reservation
+  }
 >
 
 @Injectable()
@@ -40,22 +45,28 @@ export class CreateReservationUseCase {
       return left(new ResourceNotFoundError())
     }
 
+    const seatReserved = await this.seatsRepository.reserve(seatId)
+
+    if (!seatReserved) {
+      return left(new SeatAlreadyReservedError())
+    }
+
     const expiresAt = new Date(Date.now() + 30_000)
 
     try {
-      await this.reservationsRepository.create({
+      const reservation = await this.reservationsRepository.create({
         userId,
         seatId,
         status: 'ACTIVE',
         expiresAt,
       })
+
+      return right({ reservation })
     } catch (error) {
       if (error instanceof SeatAlreadyReservedError) {
         return left(error)
       }
       throw error
     }
-
-    return right(null)
   }
 }
