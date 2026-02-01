@@ -1,5 +1,9 @@
+import { makeSeat } from 'test/factories/make-seat'
+import { makeSession } from 'test/factories/make-session'
 import { InMemorySeatsRepository } from 'test/repositories/in-memory-seats-repository'
 import { InMemorySessionsRepository } from 'test/repositories/in-memory-sessions-repository'
+import { ResourceNotFoundError } from './errors/resource-not-found.error'
+import { SeatNumberAlreadyExistsSeatsError } from './errors/seat-number-already-exists.error'
 import { RegisterSeatUseCase } from './register-seat'
 
 let inMemorySeatsRepository: InMemorySeatsRepository
@@ -15,27 +19,41 @@ describe('Register Session', () => {
       inMemorySessionsRepository,
     )
 
-    await inMemorySessionsRepository.create({
+    const session = makeSession({
       id: '1',
-      movieTitle: 'Example',
-      room: '1',
-      price: 10,
-      startsAt: new Date(),
     })
+    await inMemorySessionsRepository.create(session)
   })
 
-  it('should register multiple seats for a session', async () => {
+  it('should be able register a seat for a session', async () => {
     const result = await sut.execute({
       seatNumber: 'A1',
       sessionId: '1',
     })
 
-    await sut.execute({
-      seatNumber: 'A2',
+    expect(result.isRight()).toBe(true)
+  })
+
+  it('should not be able register a seat wih same number for a session', async () => {
+    const seat = makeSeat({ seatNumber: 'A1', sessionId: '1' })
+    await inMemorySeatsRepository.create(seat)
+
+    const result = await sut.execute({
+      seatNumber: 'A1',
       sessionId: '1',
     })
 
-    expect(result.isRight()).toBe(true)
-    expect(inMemorySeatsRepository.items).toHaveLength(2)
+    expect(result.isLeft()).toBe(true)
+    expect(result.value).toBeInstanceOf(SeatNumberAlreadyExistsSeatsError)
+  })
+
+  it('should not be able register a seat for a session that does not exist', async () => {
+    const result = await sut.execute({
+      seatNumber: 'A1',
+      sessionId: '2',
+    })
+
+    expect(result.isLeft()).toBe(true)
+    expect(result.value).toBeInstanceOf(ResourceNotFoundError)
   })
 })

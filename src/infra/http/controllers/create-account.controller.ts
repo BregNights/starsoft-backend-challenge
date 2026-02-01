@@ -11,7 +11,7 @@ import z from 'zod'
 import { ZodValidationPipe } from '../pipes/zod-validation-pipe'
 
 const createAccountBodySchema = z.object({
-  name: z.string(),
+  name: z.string().trim().min(1, 'Name cannot be empty or spaces only'),
   email: z.email(),
 })
 
