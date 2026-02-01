@@ -1,6 +1,5 @@
 import { Either, left, right } from '@/core/either'
 import { Injectable } from '@nestjs/common'
-import { ReservationStatus } from 'generated/prisma/enums'
 import { ReservationsRepository } from '../repositories/reservation-repository'
 import { SeatsRepository } from '../repositories/seat-respository'
 import { SessionsRepository } from '../repositories/session-repository'
@@ -41,20 +40,21 @@ export class CreateReservationUseCase {
       return left(new ResourceNotFoundError())
     }
 
-    const seatAlreadyReserved =
-      await this.reservationsRepository.findBySeatId(seatId)
-
-    if (seatAlreadyReserved) {
-      return left(new SeatAlreadyReservedError())
-    }
-
     const expiresAt = new Date(Date.now() + 30_000)
-    await this.reservationsRepository.create({
-      userId,
-      seatId,
-      status: ReservationStatus.ACTIVE,
-      expiresAt,
-    })
+
+    try {
+      await this.reservationsRepository.create({
+        userId,
+        seatId,
+        status: 'ACTIVE',
+        expiresAt,
+      })
+    } catch (error) {
+      if (error instanceof SeatAlreadyReservedError) {
+        return left(error)
+      }
+      throw error
+    }
 
     return right(null)
   }

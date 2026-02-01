@@ -2,8 +2,8 @@ import {
   Reservation,
   ReservationsRepository,
 } from '@/domain/cine/application/repositories/reservation-repository'
+import { SeatAlreadyReservedError } from '@/domain/cine/application/use-cases/errors/seat-already-reserved.error'
 import { Injectable } from '@nestjs/common'
-import { ReservationStatus } from 'generated/prisma/enums'
 import { PrismaService } from '../prisma.service'
 
 @Injectable()
@@ -11,14 +11,21 @@ export class PrismaReservationsRepository implements ReservationsRepository {
   constructor(private prisma: PrismaService) {}
 
   async create(reservation: Reservation): Promise<void> {
-    await this.prisma.reservation.create({
-      data: {
-        userId: reservation.userId,
-        seatId: reservation.seatId,
-        expiresAt: reservation.expiresAt,
-        status: ReservationStatus.ACTIVE ?? reservation.status,
-      },
-    })
+    try {
+      await this.prisma.reservation.create({
+        data: {
+          userId: reservation.userId,
+          seatId: reservation.seatId,
+          status: reservation.status,
+          expiresAt: reservation.expiresAt,
+        },
+      })
+    } catch (error: any) {
+      if (error.code === 'P2002') {
+        throw new SeatAlreadyReservedError()
+      }
+      throw error
+    }
   }
 
   async findBySeatId(seatId: string): Promise<Reservation | null> {
