@@ -1,3 +1,4 @@
+import { ConfirmReservationUseCase } from '@/domain/cine/application/use-cases/confirm-reservation'
 import { CreateAccountUseCase } from '@/domain/cine/application/use-cases/create-account'
 import { CreateReservationUseCase } from '@/domain/cine/application/use-cases/create-reservation'
 import { CreateSessionUseCase } from '@/domain/cine/application/use-cases/create-session'
@@ -5,6 +6,7 @@ import { FetchSeatBySessionUseCase } from '@/domain/cine/application/use-cases/f
 import { RegisterSeatUseCase } from '@/domain/cine/application/use-cases/register-seat'
 import { Module } from '@nestjs/common'
 import { DatabaseModule } from '../database/database.module'
+import { ConfirmReservationController } from './controllers/confirm-reservation.controller'
 import { CreateAccountController } from './controllers/create-account.controller'
 import { CreateReservationController } from './controllers/create-reservation.controller'
 import { CreateSessionController } from './controllers/create-session.controller'
@@ -19,6 +21,7 @@ import { RegisterSeatController } from './controllers/register-seat-controller'
     RegisterSeatController,
     FetchSeatBySessionController,
     CreateReservationController,
+    ConfirmReservationController,
   ],
   providers: [
     CreateAccountUseCase,
@@ -26,6 +29,7 @@ import { RegisterSeatController } from './controllers/register-seat-controller'
     RegisterSeatUseCase,
     FetchSeatBySessionUseCase,
     CreateReservationUseCase,
+    ConfirmReservationUseCase,
   ],
 })
 export class HttpModule {}
