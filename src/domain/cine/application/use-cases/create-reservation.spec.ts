@@ -38,6 +38,14 @@ describe('Create Reservation', () => {
       startsAt: new Date(),
     })
 
+    await inMemorySessionsRepository.create({
+      id: '2',
+      movieTitle: 'Example',
+      room: '1',
+      price: 10,
+      startsAt: new Date(),
+    })
+
     for (let i = 1; i <= 2; i++) {
       await inMemorySeatsRepository.create({
         seatNumber: `A${i}`,
@@ -73,6 +81,17 @@ describe('Create Reservation', () => {
     const result = await sut.execute({
       seatId: '2',
       sessionId: '1',
+      userId: '1',
+    })
+
+    expect(result.isLeft()).toBe(true)
+    expect(result.value).toBeInstanceOf(ResourceNotFoundError)
+  })
+
+  it('should not be able create a new reservation from a seat that not part of the session', async () => {
+    const result = await sut.execute({
+      seatId: '1',
+      sessionId: '2',
       userId: '1',
     })
 
