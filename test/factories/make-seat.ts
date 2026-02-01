@@ -4,6 +4,16 @@ import { Injectable } from '@nestjs/common'
 import { SeatStatus } from 'generated/prisma/enums'
 import { randomUUID } from 'node:crypto'
 
+export function makeSeat(override: Partial<Seat> = {}): Seat {
+  return {
+    id: randomUUID(),
+    seatNumber: 'A1',
+    status: 'AVAILABLE',
+    sessionId: randomUUID(),
+    ...override,
+  }
+}
+
 @Injectable()
 export class SeatFactory {
   constructor(private prisma: PrismaService) {}

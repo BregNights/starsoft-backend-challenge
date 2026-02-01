@@ -3,6 +3,17 @@ import { PrismaService } from '@/infra/database/prisma/prisma.service'
 import { Injectable } from '@nestjs/common'
 import { randomUUID } from 'node:crypto'
 
+export function makeSession(override: Partial<Session> = {}): Session {
+  return {
+    id: randomUUID(),
+    movieTitle: 'Example Movie',
+    room: '1',
+    price: 10,
+    startsAt: new Date(Date.now() + 60 * 60 * 1000),
+    ...override,
+  }
+}
+
 @Injectable()
 export class SessionFactory {
   constructor(private prisma: PrismaService) {}

@@ -4,6 +4,15 @@ import { faker } from '@faker-js/faker'
 import { Injectable } from '@nestjs/common'
 import { randomUUID } from 'node:crypto'
 
+export function makeUser(override: Partial<User> = {}): User {
+  return {
+    id: randomUUID(),
+    name: 'John Doe',
+    email: 'johndoe@example.com',
+    ...override,
+  }
+}
+
 @Injectable()
 export class UserFactory {
   constructor(private prisma: PrismaService) {}
