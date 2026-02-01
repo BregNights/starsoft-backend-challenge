@@ -1,3 +1,6 @@
+import { makeSeat } from 'test/factories/make-seat'
+import { makeSession } from 'test/factories/make-session'
+import { makeUser } from 'test/factories/make-user'
 import { InMemoryReservationsRepository } from 'test/repositories/in-memory-reservation-repository'
 import { InMemorySeatsRepository } from 'test/repositories/in-memory-seats-repository'
 import { InMemorySessionsRepository } from 'test/repositories/in-memory-sessions-repository'
@@ -24,35 +27,21 @@ describe('Create Reservation', () => {
       inMemorySessionsRepository,
     )
 
-    await inMemoryUsersRepository.create({
-      name: 'John Doe',
-      email: 'johndoe@example.com',
+    const user = makeUser({})
+    await inMemoryUsersRepository.create(user)
+
+    const session = makeSession({
       id: '1',
     })
-
-    await inMemorySessionsRepository.create({
-      id: '1',
-      movieTitle: 'Example',
-      room: '1',
-      price: 10,
-      startsAt: new Date(),
-    })
-
-    await inMemorySessionsRepository.create({
-      id: '2',
-      movieTitle: 'Example',
-      room: '1',
-      price: 10,
-      startsAt: new Date(),
-    })
+    await inMemorySessionsRepository.create(session)
 
     for (let i = 1; i <= 2; i++) {
-      await inMemorySeatsRepository.create({
+      const seat = makeSeat({
         seatNumber: `A${i}`,
-        status: 'AVAILABLE',
         sessionId: '1',
         id: '1',
       })
+      await inMemorySeatsRepository.create(seat)
     }
   })
 

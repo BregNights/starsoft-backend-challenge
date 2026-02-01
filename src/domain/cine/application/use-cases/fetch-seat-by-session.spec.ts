@@ -1,3 +1,5 @@
+import { makeSeat } from 'test/factories/make-seat'
+import { makeSession } from 'test/factories/make-session'
 import { InMemorySeatsRepository } from 'test/repositories/in-memory-seats-repository'
 import { InMemorySessionsRepository } from 'test/repositories/in-memory-sessions-repository'
 import { ResourceNotFoundError } from './errors/resource-not-found.error'
@@ -16,21 +18,18 @@ describe('Fetch Seats By Session', () => {
       inMemorySessionsRepository,
     )
 
-    await inMemorySessionsRepository.create({
+    const session = makeSession({
       id: '1',
-      movieTitle: 'Example',
-      room: '1',
-      price: 10,
-      startsAt: new Date(),
     })
+    await inMemorySessionsRepository.create(session)
 
     for (let i = 1; i <= 2; i++) {
-      await inMemorySeatsRepository.create({
+      const seat = makeSeat({
         seatNumber: `A${i}`,
-        status: 'AVAILABLE',
         sessionId: '1',
         id: '1',
       })
+      await inMemorySeatsRepository.create(seat)
     }
   })
 

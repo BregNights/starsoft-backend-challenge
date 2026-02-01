@@ -1,3 +1,4 @@
+import { makeUser } from 'test/factories/make-user'
 import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
 import { CreateAccountUseCase } from './create-account'
 import { UserAlreadyExistsError } from './errors/user-already-exists.error'
@@ -21,10 +22,8 @@ describe('Create Account', () => {
   })
 
   it('should not be able create a new account with same email', async () => {
-    await sut.execute({
-      name: 'example',
-      email: 'example@example.com',
-    })
+    const user = makeUser({ email: 'example@example.com' })
+    await inMemoryUsersRepository.create(user)
 
     const result = await sut.execute({
       name: 'example1',
