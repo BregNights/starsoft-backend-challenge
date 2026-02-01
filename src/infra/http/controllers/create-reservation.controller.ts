@@ -9,6 +9,7 @@ import {
 } from '@nestjs/common'
 import z from 'zod'
 import { ZodValidationPipe } from '../pipes/zod-validation-pipe'
+import { ReservationPresenter } from '../presenters/reservation-presenter'
 
 const createReservationBodySchema = z.object({
   seatId: z.string(),
@@ -32,5 +33,7 @@ export class CreateReservationController {
       const error = result.value
       throw new ConflictException(error.message)
     }
+
+    return ReservationPresenter.toHTTP(result.value.reservation)
   }
 }
