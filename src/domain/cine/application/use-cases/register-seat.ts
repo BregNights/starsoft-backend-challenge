@@ -37,6 +37,7 @@ export class RegisterSeatUseCase {
     await this.seatsRepository.create({
       seatNumber,
       sessionId,
+      status: 'AVAILABLE',
     })
 
     return right(null)
