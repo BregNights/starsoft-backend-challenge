@@ -1,17 +1,18 @@
 import {
   Reservation,
   ReservationsRepository,
+  ReservationStatus,
 } from '@/domain/cine/application/repositories/reservation-repository'
 import { SeatAlreadyReservedError } from '@/domain/cine/application/use-cases/errors/seat-already-reserved.error'
 
 export class InMemoryReservationsRepository implements ReservationsRepository {
   public items: Reservation[] = []
 
-  async create(reservation: Reservation): Promise<void> {
+  async create(reservation: Reservation): Promise<Reservation> {
     const seatAlreadyReserved = this.items.find(
       (item) =>
         item.seatId === reservation.seatId &&
-        item.status === 'ACTIVE' &&
+        item.status === reservation.status &&
         item.expiresAt > new Date(),
     )
 
@@ -20,11 +21,26 @@ export class InMemoryReservationsRepository implements ReservationsRepository {
     }
 
     this.items.push(reservation)
+    return reservation
+  }
+
+  async findById(id: string): Promise<Reservation | null> {
+    const reservation = this.items.find((item) => item.id === id)
+
+    return reservation || null
   }
 
   async findBySeatId(seatId: string): Promise<Reservation | null> {
     const reservationSeat = this.items.find((item) => item.seatId === seatId)
 
     return reservationSeat || null
+  }
+
+  async updateStatus(id: string, status: ReservationStatus): Promise<void> {
+    const reservation = this.items.find((item) => item.id === id)
+
+    if (!reservation) return
+
+    reservation.status = status
   }
 }
