@@ -1,9 +1,9 @@
 import {
   Seat,
   SeatsRepository,
+  SeatStatus,
 } from '@/domain/cine/application/repositories/seat-respository'
 import { Injectable } from '@nestjs/common'
-import { SeatStatus } from 'generated/prisma/enums'
 import { PrismaService } from '../prisma.service'
 
 @Injectable()
@@ -15,7 +15,6 @@ export class PrismaSeatsRepository implements SeatsRepository {
       data: {
         seatNumber: seat.seatNumber,
         sessionId: seat.sessionId,
-        status: SeatStatus.AVAILABLE ?? seat.status,
       },
     })
   }
@@ -42,5 +41,26 @@ export class PrismaSeatsRepository implements SeatsRepository {
     })
 
     return session ?? null
+  }
+
+  async reserve(seatId: string): Promise<boolean> {
+    const result = await this.prisma.seat.updateMany({
+      where: {
+        id: seatId,
+        status: 'AVAILABLE',
+      },
+      data: {
+        status: 'RESERVED',
+      },
+    })
+
+    return result.count === 1
+  }
+
+  async markAsSold(id: string, status: SeatStatus): Promise<void> {
+    await this.prisma.seat.update({
+      where: { id },
+      data: { status },
+    })
   }
 }
