@@ -1,6 +1,7 @@
 import {
   Seat,
   SeatsRepository,
+  SeatStatus,
 } from '@/domain/cine/application/repositories/seat-respository'
 
 export class InMemorySeatsRepository implements SeatsRepository {
@@ -26,5 +27,28 @@ export class InMemorySeatsRepository implements SeatsRepository {
     const seats = this.items.filter((item) => item.sessionId === sessionId)
 
     return seats
+  }
+
+  async reserve(seatId: string): Promise<boolean> {
+    const seat = this.items.find((item) => item.id === seatId)
+
+    if (!seat) {
+      return false
+    }
+
+    if (seat.status !== 'AVAILABLE') {
+      return false
+    }
+
+    seat.status = 'RESERVED'
+    return true
+  }
+
+  async markAsSold(seatId: string, status: SeatStatus): Promise<void> {
+    const seat = this.items.find((item) => item.id === seatId)
+
+    if (!seat) return
+
+    seat.status = status
   }
 }
