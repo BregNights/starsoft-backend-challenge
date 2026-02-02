@@ -36,6 +36,12 @@ export class InMemoryReservationsRepository implements ReservationsRepository {
     return reservationSeat || null
   }
 
+  async findManyConfirmedByUserId(userId: string): Promise<Reservation[]> {
+    return this.items.filter(
+      (item) => item.userId === userId && item.status === 'CONFIRMED',
+    )
+  }
+
   async updateStatus(id: string, status: ReservationStatus): Promise<void> {
     const reservation = this.items.find((item) => item.id === id)
 

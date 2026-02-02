@@ -8,6 +8,7 @@ import { PrismaService } from '../prisma.service'
 @Injectable()
 export class PrismaUsersRepository implements UsersRepository {
   constructor(private prisma: PrismaService) {}
+
   async create(user: User): Promise<void> {
     await this.prisma.user.create({
       data: {
@@ -15,6 +16,12 @@ export class PrismaUsersRepository implements UsersRepository {
         email: user.email,
       },
     })
+  }
+
+  async findById(id: string): Promise<User | null> {
+    const user = await this.prisma.user.findUnique({ where: { id } })
+
+    return user ?? null
   }
 
   async findByEmail(email: string): Promise<User | null> {

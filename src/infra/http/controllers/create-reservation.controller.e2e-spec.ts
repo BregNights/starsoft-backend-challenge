@@ -51,4 +51,44 @@ describe('Create reservation (E2E)', () => {
 
     expect(reservationOnDatabase).toBeTruthy()
   })
+
+  it('[POST] /reservations should be able prevent race condition on same seat', async () => {
+    const userA = await userFactory.makePrismaUser()
+    console.log(userA.id)
+    const userB = await userFactory.makePrismaUser()
+    const session = await sessionFactory.makePrismaSession()
+    const seat = await seatFactory.makePrismaSeat({
+      sessionId: session.id,
+      seatNumber: `A1`,
+    })
+
+    const [responseA, responseB] = await Promise.all([
+      request(app.getHttpServer())
+        .post('/reservations')
+        .send({ seatId: seat.id, sessionId: session.id, userId: userA.id }),
+      request(app.getHttpServer())
+        .post('/reservations')
+        .send({ seatId: seat.id, sessionId: session.id, userId: userB.id }),
+    ])
+
+    const statusCodes = [responseA.statusCode, responseB.statusCode].sort()
+    expect(statusCodes).toEqual([201, 409])
+
+    const reservationsOnDatabase = await prisma.reservation.findMany({
+      where: {
+        seatId: seat.id,
+        status: 'ACTIVE',
+      },
+    })
+
+    expect(reservationsOnDatabase).toHaveLength(1)
+
+    const seatOnDatabase = await prisma.seat.findUnique({
+      where: {
+        id: seat.id,
+      },
+    })
+
+    expect(seatOnDatabase?.status).toBe('RESERVED')
+  })
 })
