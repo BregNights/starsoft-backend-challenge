@@ -167,3 +167,4 @@ pnpm test:e2e
 - Expandir historico com dados da sessao e valor pago.
 - Implementar compra de multiplos assentos
 - Adicionar logs e metricas.
+- Adicionar autenticacao
