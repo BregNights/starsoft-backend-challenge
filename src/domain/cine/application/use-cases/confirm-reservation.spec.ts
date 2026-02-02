@@ -2,6 +2,7 @@ import { makeReservation } from 'test/factories/make-reservation'
 import { makeSeat } from 'test/factories/make-seat'
 import { makeSession } from 'test/factories/make-session'
 import { makeUser } from 'test/factories/make-user'
+import { InMemoryReservationExpirationRepository } from 'test/repositories/in-memory-reservation-expiration-repository'
 import { InMemoryReservationsRepository } from 'test/repositories/in-memory-reservation-repository'
 import { InMemorySeatsRepository } from 'test/repositories/in-memory-seats-repository'
 import { InMemorySessionsRepository } from 'test/repositories/in-memory-sessions-repository'
@@ -12,6 +13,7 @@ let inMemoryReservationsRepository: InMemoryReservationsRepository
 let inMemorySeatsRepository: InMemorySeatsRepository
 let inMemorySessionsRepository: InMemorySessionsRepository
 let inMemoryUsersRepository: InMemoryUsersRepository
+let inMemoryReservationExpirationRepository: InMemoryReservationExpirationRepository
 let sut: ConfirmReservationUseCase
 
 describe('Confirm Reservation', () => {
@@ -20,9 +22,13 @@ describe('Confirm Reservation', () => {
     inMemorySeatsRepository = new InMemorySeatsRepository()
     inMemorySessionsRepository = new InMemorySessionsRepository()
     inMemoryUsersRepository = new InMemoryUsersRepository()
+    inMemoryReservationExpirationRepository =
+      new InMemoryReservationExpirationRepository()
+
     sut = new ConfirmReservationUseCase(
       inMemoryReservationsRepository,
       inMemorySeatsRepository,
+      inMemoryReservationExpirationRepository,
     )
 
     const user = makeUser({ id: '1' })
@@ -45,6 +51,7 @@ describe('Confirm Reservation', () => {
       userId: user.id,
     })
     await inMemoryReservationsRepository.create(reservation)
+    await inMemoryReservationExpirationRepository.save(reservation.id!, 30)
   })
 
   it('should be able confirm reservation', async () => {

@@ -51,4 +51,13 @@ export class InMemorySeatsRepository implements SeatsRepository {
 
     seat.status = status
   }
+
+  async markAsAvailable(seatId: string): Promise<void> {
+    const seat = this.items.find((s) => s.id === seatId)
+    if (!seat) return
+
+    if (seat.status === 'RESERVED') {
+      seat.status = 'AVAILABLE'
+    }
+  }
 }
