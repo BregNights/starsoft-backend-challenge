@@ -11,7 +11,7 @@ import z from 'zod'
 import { ZodValidationPipe } from '../pipes/zod-validation-pipe'
 
 const registerSeatBodySchema = z.object({
-  seatNumber: z.string(),
+  seatNumbers: z.array(z.string()).min(16, 'Minimum of 16 seats'),
   sessionId: z.string(),
 })
 
@@ -24,10 +24,10 @@ export class RegisterSeatController {
   @HttpCode(201)
   @UsePipes(new ZodValidationPipe(registerSeatBodySchema))
   async handle(@Body() body: RegisterSeatBodySchema) {
-    const { seatNumber, sessionId } = body
+    const { seatNumbers, sessionId } = body
 
     const result = await this.usecase.execute({
-      seatNumber,
+      seatNumbers,
       sessionId,
     })
 

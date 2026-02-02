@@ -26,19 +26,38 @@ describe('Register Seat (E2E)', () => {
   it('[POST] /seats', async () => {
     const session = await sessionFactory.makePrismaSession()
 
-    const response = await request(app.getHttpServer()).post('/seats').send({
-      seatNumber: 'A1',
-      sessionId: session.id,
-    })
+    const response = await request(app.getHttpServer())
+      .post('/seats')
+      .send({
+        seatNumbers: [
+          'A1',
+          'A2',
+          'A3',
+          'A4',
+          'B1',
+          'B2',
+          'B3',
+          'B4',
+          'D1',
+          'D2',
+          'D3',
+          'D4',
+          'C1',
+          'C2',
+          'C3',
+          'C4',
+        ],
+        sessionId: session.id,
+      })
 
     expect(response.statusCode).toBe(201)
 
-    const seatOnDatabase = await prisma.seat.findFirst({
+    const seatOnDatabase = await prisma.seat.findMany({
       where: {
-        id: response.body.id,
+        sessionId: session.id,
       },
     })
 
-    expect(seatOnDatabase).toBeTruthy()
+    expect(seatOnDatabase).toHaveLength(16)
   })
 })

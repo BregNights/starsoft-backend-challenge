@@ -27,7 +27,7 @@ describe('Register Session', () => {
 
   it('should be able register a seat for a session', async () => {
     const result = await sut.execute({
-      seatNumber: 'A1',
+      seatNumbers: ['A1', 'A2'],
       sessionId: '1',
     })
 
@@ -39,7 +39,7 @@ describe('Register Session', () => {
     await inMemorySeatsRepository.create(seat)
 
     const result = await sut.execute({
-      seatNumber: 'A1',
+      seatNumbers: ['A1', 'A2'],
       sessionId: '1',
     })
 
@@ -49,11 +49,21 @@ describe('Register Session', () => {
 
   it('should not be able register a seat for a session that does not exist', async () => {
     const result = await sut.execute({
-      seatNumber: 'A1',
+      seatNumbers: ['A1'],
       sessionId: '2',
     })
 
     expect(result.isLeft()).toBe(true)
     expect(result.value).toBeInstanceOf(ResourceNotFoundError)
+  })
+
+  it('should not be able register duplicated seat numbers in same request', async () => {
+    const result = await sut.execute({
+      seatNumbers: ['A1', 'A1'],
+      sessionId: '1',
+    })
+
+    expect(result.isLeft()).toBe(true)
+    expect(result.value).toBeInstanceOf(SeatNumberAlreadyExistsSeatsError)
   })
 })

@@ -6,7 +6,7 @@ import { ResourceNotFoundError } from './errors/resource-not-found.error'
 import { SeatNumberAlreadyExistsSeatsError } from './errors/seat-number-already-exists.error'
 
 interface RegisterSeatUseCaseRequest {
-  seatNumber: string
+  seatNumbers: string[]
   sessionId: string
 }
 
@@ -22,23 +22,31 @@ export class RegisterSeatUseCase {
     private sessionsRepository: SessionsRepository,
   ) {}
   async execute({
-    seatNumber,
+    seatNumbers,
     sessionId,
   }: RegisterSeatUseCaseRequest): Promise<RegisterSeatUseCaseResponse> {
     const session = await this.sessionsRepository.findById(sessionId)
     if (!session) return left(new ResourceNotFoundError())
 
-    const seat = await this.seatsRepository.findManySeatsBySessionId(sessionId)
-    const seatWithSameNumber = seat.find(
-      (seat) => seat.seatNumber === seatNumber,
+    const seats = await this.seatsRepository.findManySeatsBySessionId(sessionId)
+    const existingSeatNumbers = new Set(seats.map((seat) => seat.seatNumber))
+    const hasDuplicateSeat = new Set(seatNumbers).size !== seatNumbers.length
+    const seatWithSameNumber = seatNumbers.find((seatNumber) =>
+      existingSeatNumbers.has(seatNumber),
     )
-    if (seatWithSameNumber) return left(new SeatNumberAlreadyExistsSeatsError())
+    if (hasDuplicateSeat || seatWithSameNumber) {
+      return left(new SeatNumberAlreadyExistsSeatsError())
+    }
 
-    await this.seatsRepository.create({
-      seatNumber,
-      sessionId,
-      status: 'AVAILABLE',
-    })
+    await Promise.all(
+      seatNumbers.map((seatNumber) =>
+        this.seatsRepository.create({
+          seatNumber,
+          sessionId,
+          status: 'AVAILABLE',
+        }),
+      ),
+    )
 
     return right(null)
   }
