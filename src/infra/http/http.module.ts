@@ -6,6 +6,7 @@ import { FetchPurchaseHistoryByUserUseCase } from '@/domain/cine/application/use
 import { FetchSeatBySessionUseCase } from '@/domain/cine/application/use-cases/fetch-seat-by-session'
 import { RegisterSeatUseCase } from '@/domain/cine/application/use-cases/register-seat'
 import { Module } from '@nestjs/common'
+import { ApiDocsController } from './controllers/api-docs.controller'
 import { DatabaseModule } from '../database/database.module'
 import { RedisModule } from '../redis/redis.module'
 import { ConfirmReservationController } from './controllers/confirm-reservation.controller'
@@ -26,6 +27,7 @@ import { RegisterSeatController } from './controllers/register-seat-controller'
     FetchPurchaseHistoryByUserController,
     CreateReservationController,
     ConfirmReservationController,
+    ApiDocsController,
   ],
   providers: [
     CreateAccountUseCase,
