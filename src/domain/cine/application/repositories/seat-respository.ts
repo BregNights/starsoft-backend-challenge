@@ -15,4 +15,5 @@ export abstract class SeatsRepository {
   abstract findManySeatsBySessionId(sessionId: string): Promise<Seat[]>
   abstract reserve(seatId: string): Promise<boolean>
   abstract markAsSold(seatId: string, status: SeatStatus): Promise<void>
+  abstract markAsAvailable(seatId: string): Promise<void>
 }
