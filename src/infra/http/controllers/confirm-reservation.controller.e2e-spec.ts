@@ -43,7 +43,7 @@ describe('Confirm Reservation (E2E)', () => {
 
     expect(response.statusCode).toBe(201)
 
-    const reservationOnDatabase = await prisma.reservation.findUnique({
+    const reservationOnDatabase = await prisma.reservation.findFirst({
       where: {
         seatId: seat.id,
       },
