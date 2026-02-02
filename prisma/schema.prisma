@@ -44,7 +44,7 @@ model Seat {
   sessionId   String
   session     Session      @relation(fields: [sessionId], references: [id])
   createdAt   DateTime     @default(now())
-  reservation Reservation?
+  reservations Reservation[]
 
   @@unique([sessionId, seatNumber])
   @@map("seat")
@@ -52,7 +52,7 @@ model Seat {
 
 model Reservation {
   id        String            @id @default(uuid())
-  seatId    String            @unique
+  seatId    String            
   userId    String
   status    ReservationStatus
   expiresAt DateTime
