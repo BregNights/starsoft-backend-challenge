@@ -47,6 +47,20 @@ export class PrismaReservationsRepository implements ReservationsRepository {
     return reservationSeat ?? null
   }
 
+  async findManyConfirmedByUserId(userId: string): Promise<Reservation[]> {
+    const reservations = await this.prisma.reservation.findMany({
+      where: {
+        userId,
+        status: 'CONFIRMED',
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    })
+
+    return reservations
+  }
+
   async updateStatus(id: string, status: ReservationStatus): Promise<void> {
     await this.prisma.reservation.update({
       where: { id },
