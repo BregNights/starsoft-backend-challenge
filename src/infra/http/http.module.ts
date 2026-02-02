@@ -6,6 +6,7 @@ import { FetchSeatBySessionUseCase } from '@/domain/cine/application/use-cases/f
 import { RegisterSeatUseCase } from '@/domain/cine/application/use-cases/register-seat'
 import { Module } from '@nestjs/common'
 import { DatabaseModule } from '../database/database.module'
+import { RedisModule } from '../redis/redis.module'
 import { ConfirmReservationController } from './controllers/confirm-reservation.controller'
 import { CreateAccountController } from './controllers/create-account.controller'
 import { CreateReservationController } from './controllers/create-reservation.controller'
@@ -14,7 +15,7 @@ import { FetchSeatBySessionController } from './controllers/fetch-seat-by-sessio
 import { RegisterSeatController } from './controllers/register-seat-controller'
 
 @Module({
-  imports: [DatabaseModule],
+  imports: [DatabaseModule, RedisModule],
   controllers: [
     CreateAccountController,
     CreateSessionController,
