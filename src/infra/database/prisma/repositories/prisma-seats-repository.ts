@@ -63,4 +63,16 @@ export class PrismaSeatsRepository implements SeatsRepository {
       data: { status },
     })
   }
+
+  async markAsAvailable(seatId: string): Promise<void> {
+    await this.prisma.seat.updateMany({
+      where: {
+        id: seatId,
+        status: 'RESERVED',
+      },
+      data: {
+        status: 'AVAILABLE',
+      },
+    })
+  }
 }
