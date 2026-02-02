@@ -1,4 +1,5 @@
 import { Either, left, right } from '@/core/either'
+import { ReservationExpirationRepository } from '@/infra/redis/reservation-expiration-repository'
 import { Injectable } from '@nestjs/common'
 import { ReservationsRepository } from '../repositories/reservation-repository'
 import { SeatsRepository } from '../repositories/seat-respository'
@@ -25,6 +26,7 @@ export class ConfirmReservationUseCase {
   constructor(
     private reservationsRepository: ReservationsRepository,
     private seatsRepository: SeatsRepository,
+    private reservationExpirationRepository: ReservationExpirationRepository,
   ) {}
   async execute({
     reservationId,
@@ -35,16 +37,23 @@ export class ConfirmReservationUseCase {
     if (!reservation) return left(new ResourceNotFoundError())
 
     if (reservation.userId !== userId) return left(new PermissionRefusedError())
-    console.log(reservation.status)
+
     if (reservation.status !== 'ACTIVE')
       return left(new InvalidReservationStatusError())
+
+    const reservationStillActive =
+      await this.reservationExpirationRepository.exists(reservationId)
+
+    if (!reservationStillActive) {
+      return left(new ReservationExpiredError())
+    }
 
     const now = new Date()
     if (reservation.expiresAt < now) return left(new ReservationExpiredError())
 
     await this.reservationsRepository.updateStatus(reservationId, 'CONFIRMED')
-
     await this.seatsRepository.markAsSold(reservation.seatId, 'SOLD')
+    await this.reservationExpirationRepository.remove(reservationId)
 
     return right(null)
   }

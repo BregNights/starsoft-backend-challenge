@@ -43,4 +43,19 @@ export class InMemoryReservationsRepository implements ReservationsRepository {
 
     reservation.status = status
   }
+
+  async findManyExpired(now: Date): Promise<Reservation[]> {
+    return this.items.filter(
+      (reservation) =>
+        reservation.status === 'ACTIVE' && reservation.expiresAt < now,
+    )
+  }
+
+  async expire(reservationId: string): Promise<void> {
+    const reservation = this.items.find((item) => item.id === reservationId)
+
+    if (!reservation) return
+
+    reservation.status = 'EXPIRED'
+  }
 }

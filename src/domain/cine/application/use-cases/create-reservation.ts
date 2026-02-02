@@ -1,4 +1,5 @@
 import { Either, left, right } from '@/core/either'
+import { ReservationExpirationRepository } from '@/infra/redis/reservation-expiration-repository'
 import { Injectable } from '@nestjs/common'
 import {
   Reservation,
@@ -28,6 +29,7 @@ export class CreateReservationUseCase {
     private reservationsRepository: ReservationsRepository,
     private seatsRepository: SeatsRepository,
     private sessionsRepository: SessionsRepository,
+    private reservationExpirationRepository: ReservationExpirationRepository,
   ) {}
 
   async execute({
@@ -60,6 +62,10 @@ export class CreateReservationUseCase {
         status: 'ACTIVE',
         expiresAt,
       })
+
+      if (reservation.id) {
+        await this.reservationExpirationRepository.save(reservation.id, 30)
+      }
 
       return right({ reservation })
     } catch (error) {

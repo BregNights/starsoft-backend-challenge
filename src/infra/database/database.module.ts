@@ -3,6 +3,7 @@ import { SeatsRepository } from '@/domain/cine/application/repositories/seat-res
 import { SessionsRepository } from '@/domain/cine/application/repositories/session-repository'
 import { UsersRepository } from '@/domain/cine/application/repositories/users-repository'
 import { Module } from '@nestjs/common'
+import { RedisModule } from '../redis/redis.module'
 import { PrismaService } from './prisma/prisma.service'
 import { PrismaReservationsRepository } from './prisma/repositories/prisma-reservation-repository'
 import { PrismaSeatsRepository } from './prisma/repositories/prisma-seats-repository'
@@ -10,7 +11,7 @@ import { PrismaSessionsRepository } from './prisma/repositories/prisma-sessions-
 import { PrismaUsersRepository } from './prisma/repositories/prisma-users-repository'
 
 @Module({
-  imports: [],
+  imports: [RedisModule],
   providers: [
     PrismaService,
     {

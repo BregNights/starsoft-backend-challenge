@@ -14,4 +14,6 @@ export abstract class ReservationsRepository {
   abstract findById(id: string): Promise<Reservation | null>
   abstract findBySeatId(seatId: string): Promise<Reservation | null>
   abstract updateStatus(id: string, status: ReservationStatus): Promise<void>
+  abstract findManyExpired(now: Date): Promise<Reservation[]>
+  abstract expire(reservationId: string): Promise<void>
 }

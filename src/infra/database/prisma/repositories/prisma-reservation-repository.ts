@@ -40,7 +40,7 @@ export class PrismaReservationsRepository implements ReservationsRepository {
   }
 
   async findBySeatId(seatId: string): Promise<Reservation | null> {
-    const reservationSeat = await this.prisma.reservation.findUnique({
+    const reservationSeat = await this.prisma.reservation.findFirst({
       where: { seatId },
     })
 
@@ -51,6 +51,30 @@ export class PrismaReservationsRepository implements ReservationsRepository {
     await this.prisma.reservation.update({
       where: { id },
       data: { status },
+    })
+  }
+
+  async findManyExpired(now: Date): Promise<Reservation[]> {
+    const reservations = await this.prisma.reservation.findMany({
+      where: {
+        status: 'ACTIVE',
+        expiresAt: {
+          lt: now,
+        },
+      },
+    })
+
+    return reservations
+  }
+
+  async expire(reservationId: string): Promise<void> {
+    await this.prisma.reservation.update({
+      where: {
+        id: reservationId,
+      },
+      data: {
+        status: 'EXPIRED',
+      },
     })
   }
 }
