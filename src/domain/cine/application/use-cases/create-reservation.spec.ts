@@ -1,6 +1,7 @@
 import { makeSeat } from 'test/factories/make-seat'
 import { makeSession } from 'test/factories/make-session'
 import { makeUser } from 'test/factories/make-user'
+import { InMemoryReservationExpirationRepository } from 'test/repositories/in-memory-reservation-expiration-repository'
 import { InMemoryReservationsRepository } from 'test/repositories/in-memory-reservation-repository'
 import { InMemorySeatsRepository } from 'test/repositories/in-memory-seats-repository'
 import { InMemorySessionsRepository } from 'test/repositories/in-memory-sessions-repository'
@@ -13,6 +14,7 @@ let inMemoryReservationsRepository: InMemoryReservationsRepository
 let inMemorySeatsRepository: InMemorySeatsRepository
 let inMemorySessionsRepository: InMemorySessionsRepository
 let inMemoryUsersRepository: InMemoryUsersRepository
+let inMemoryReservationExpirationRepository: InMemoryReservationExpirationRepository
 let sut: CreateReservationUseCase
 
 describe('Create Reservation', () => {
@@ -21,10 +23,14 @@ describe('Create Reservation', () => {
     inMemorySeatsRepository = new InMemorySeatsRepository()
     inMemorySessionsRepository = new InMemorySessionsRepository()
     inMemoryUsersRepository = new InMemoryUsersRepository()
+    inMemoryReservationExpirationRepository =
+      new InMemoryReservationExpirationRepository()
+
     sut = new CreateReservationUseCase(
       inMemoryReservationsRepository,
       inMemorySeatsRepository,
       inMemorySessionsRepository,
+      inMemoryReservationExpirationRepository,
     )
 
     const user = makeUser({})
